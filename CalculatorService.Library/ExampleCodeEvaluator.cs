@@ -73,7 +73,7 @@ public class ExampleCodeEvaluator : IExpressionEvaluator
     private static Expression ReadOperand(StringReader reader)
     {
         var myChar = (char)reader.Read();
-        decimal val = int.Parse(myChar.ToString());
+        decimal val = decimal.Parse(myChar.ToString());
 
         return Expression.Constant(val);
     }
