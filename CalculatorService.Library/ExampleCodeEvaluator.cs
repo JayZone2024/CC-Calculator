@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text;
 
 namespace CalculatorService.Library;
 
@@ -20,9 +21,10 @@ public class ExampleCodeEvaluator : IExpressionEvaluator
         {
             var next = (char)peek;
 
-            if (char.IsDigit(next))
+
+            if (IsNumeric(reader, next, out var expressionValue))
             {
-                _expressions.Push(ReadOperand(reader));
+                _expressions.Push(expressionValue!);
                 continue;
             }
 
@@ -70,14 +72,6 @@ public class ExampleCodeEvaluator : IExpressionEvaluator
         return compiled();
     }
 
-    private static Expression ReadOperand(StringReader reader)
-    {
-        var myChar = (char)reader.Read();
-        decimal val = decimal.Parse(myChar.ToString());
-
-        return Expression.Constant(val);
-    }
-
     private static Operation ReadOperation(StringReader reader)
     {
         var myChar = (char)reader.Read();
@@ -94,5 +88,37 @@ public class ExampleCodeEvaluator : IExpressionEvaluator
 
             _expressions.Push(((Operation)_operators.Pop()).Apply(left, right));
         }
+    }
+
+    private static bool IsNumeric(StringReader reader, char nextChar, out Expression? expression)
+    {
+        expression = null!;
+
+        var sb = new StringBuilder();
+
+        if (!char.IsDigit(nextChar))
+        {
+            return false;
+        }
+
+        
+        while (true)
+        {
+            sb.Append(nextChar);
+            reader.Read();
+            nextChar = (char)reader.Peek();
+
+            if (!char.IsDigit(nextChar) && nextChar != '.')
+            {
+                break;
+            }
+        }
+
+        var stringValue = sb.ToString();
+
+        var number = decimal.Parse(stringValue);
+        expression = Expression.Constant(number);
+
+        return true;
     }
 }

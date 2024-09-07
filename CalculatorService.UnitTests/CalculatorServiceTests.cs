@@ -11,7 +11,7 @@ public class CalculatorServiceTests
     public void When_Adding_Two_Plus_Two_Then_Result_Should_Be_Four()
     {
         // Arrange
-        const string expression = "2+2.1";
+        const string expression = "2.5+2";
         const decimal expectedResult = 4;
 
         // Act
