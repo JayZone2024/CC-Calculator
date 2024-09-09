@@ -43,7 +43,7 @@ public sealed class Operation
         { '/', Division }
     };
 
-    private Operation(int precedence, Func<Expression, Expression, Expression> operation, string name)
+    public Operation(int precedence, Func<Expression, Expression, Expression> operation, string name)
     {
         Precedence = precedence;
         _operation = operation;

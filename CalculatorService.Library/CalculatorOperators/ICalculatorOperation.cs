@@ -1,12 +1,12 @@
-﻿using System.Linq.Expressions;
-
-namespace CalculatorService.Library.CalculatorOperators;
+﻿namespace CalculatorService.Library.CalculatorOperators;
 
 public interface ICalculatorOperation
 {
     string Name { get; }
 
-    string Operator { get; }
-    
-    Expression Apply(Expression left, Expression right);
+    int Precedence { get; }
+
+    bool CanApply(char operand);
+
+    Operation CalculatorOperation { get; }
 }
