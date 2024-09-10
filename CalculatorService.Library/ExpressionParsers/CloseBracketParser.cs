@@ -26,9 +26,7 @@ public class CloseBracketParser(IEnumerable<ICalculatorOperation> calculatorOper
 
         EvaluateOperation(Func, context);
 
-        operations.Pop();
-
-        context.CalculatorOperations.Push(CloseBracket);
+        context.CalculatorOperations.Pop();
     }
 
     private void EvaluateOperation(Func<bool> condition, CalculatorContext context)
