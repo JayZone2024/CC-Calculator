@@ -3,15 +3,19 @@ using CalculatorService.Library.CalculatorOperators;
 using CalculatorService.Library.ExpressionParsers;
 using FluentAssertions;
 
+using ExpressionParser = CalculatorService.Library.ExpressionParser;
+
 namespace CalculatorService.UnitTests;
 
 public class MathExpressionEvaluatorTests
 {
-    private readonly MathExpressionEvaluator _evaluator;
+    private readonly ExpressionParser _expressionParser;
+    private readonly IEnumerable<ICalculatorOperation> _calculatorOperations;
+
 
     public MathExpressionEvaluatorTests()
     {
-        var calculatorOperations = new List<ICalculatorOperation>
+        _calculatorOperations = new List<ICalculatorOperation>
         {
             new AddOperation(),
             new DivisionOperation(),
@@ -19,31 +23,35 @@ public class MathExpressionEvaluatorTests
             new SubtractOperation()
         };
 
-        var calculatorOperationParser = new CalculatorOperationParser(calculatorOperations);
+        var calculatorOperationParser = new CalculatorOperationParser(_calculatorOperations);
+        
         var numericValueParser = new NumericValueParser();
         var openBracketParser = new OpenBracketParser();
-        var closeBracketParser = new CloseBracketParser(calculatorOperations);
+        var closeBracketParser = new CloseBracketParser(_calculatorOperations);
         
-        var expressionParser = new ExpressionParser(
+        _expressionParser = new ExpressionParser(
             calculatorOperationParser,
             numericValueParser,
             openBracketParser,
             closeBracketParser);
-
-        _evaluator = new MathExpressionEvaluator(expressionParser, calculatorOperations);
     }
 
-    [Fact]
-    public void Test1()
+    [Theory]
+    [InlineData("2+2", 4)]
+    [InlineData("2 + 2", 4)]
+    [InlineData("((2 + 2) * 5) + 100", 120)]
+    [InlineData("2*(5+3)", 16)]
+    [InlineData("(5+3)*2", 16)]
+    [InlineData("(100 * 2) + (1000 - 500)", 700)]
+    public void When_Expression_Is_Evaluated_Then_Calculated_Value_Should_Be_Valid(string mathExpression, decimal expectedValue)
     {
         // Arrange
-        const string expression = "((2 + 2) * 5) + 100";
-        const decimal expectedResult = 120M;
+        var evaluator = new MathExpressionEvaluator(_expressionParser, _calculatorOperations);
 
         // Act
-        var result = _evaluator.Evaluate(expression);
+        var result = evaluator.Evaluate(mathExpression);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.Should().Be(expectedValue);
     }
 }
