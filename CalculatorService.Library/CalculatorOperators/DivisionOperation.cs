@@ -12,5 +12,5 @@ public class DivisionOperation : ICalculatorOperation
 
     public bool CanApply(char operand) => operand.Equals(DivisionOperand);
 
-    public Operation CalculatorOperation => new(Precedence, Expression.Divide, "Divide");
+    public Operation2 CalculatorOperation => new(Precedence, Expression.Divide, "Divide");
 }

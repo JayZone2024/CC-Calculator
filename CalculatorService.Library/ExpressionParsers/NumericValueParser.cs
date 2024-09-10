@@ -7,7 +7,7 @@ public interface INumericValueParser
 {
     bool IsNumericValue(char operand, StringReader reader, out decimal? value);
 
-    void EvaluateValue(CalculatorContext context, decimal value);
+    void ParseValue(CalculatorContext context, decimal value);
 }
 
 public class NumericValueParser : INumericValueParser
@@ -44,7 +44,7 @@ public class NumericValueParser : INumericValueParser
         return true;
     }
 
-    public void EvaluateValue(CalculatorContext context, decimal value)
+    public void ParseValue(CalculatorContext context, decimal value)
     {
         var constantExpression = Expression.Constant(value);
 

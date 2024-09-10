@@ -12,13 +12,6 @@ public class ExpressionParser : IExpressionParser
 {
     private readonly char[] _mathOperators;
 
-    public ExpressionParser(ICalculatorFunctionFactory calculatorFunctionFactory)
-    {
-        _mathOperators = calculatorFunctionFactory
-            .CalculatorFunctions
-            .Select(_ => _.FunctionType)
-            .ToArray();
-    }
 
     public ParsedExpressionModel ParsedExpression(string expression)
     {

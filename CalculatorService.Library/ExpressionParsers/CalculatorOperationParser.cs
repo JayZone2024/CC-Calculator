@@ -4,33 +4,37 @@ namespace CalculatorService.Library.ExpressionParsers;
 
 public interface ICalculatorOperationParser
 {
-    bool IsOperationDefined(char operand);
+    bool IsOperationDefined(CalculatorContext context);
 
-    void EvaluateOperand(CalculatorContext context);
+    void ParseOperand(CalculatorContext context);
 }
 
 public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calculatorOperations) : ICalculatorOperationParser
 {
-    public bool IsOperationDefined(char operand)
+    private const char OpenBracket = '(';
+
+    public bool IsOperationDefined(CalculatorContext context)
     {
-        var calculatorOperation = calculatorOperations.FirstOrDefault(_ => _.CanApply(operand));
+        var calculatorOperation = calculatorOperations.SingleOrDefault(_ => _.CanApply(context.NextOperand));
 
         return calculatorOperation != null;
     }
 
-    public void EvaluateOperand(CalculatorContext context)
+    public void ParseOperand(CalculatorContext context)
     {
         var currentOperation = (char)context.ExpressionReader!.Read();
 
         var calculatorOperation = calculatorOperations.Single(_ => _.CanApply(currentOperation));
 
         var operations = context.CalculatorOperations;
-        var precedenceOfNextOperation = ((Operation)context.ExpressionReader.Peek()).Precedence;
-
+        var nextOperationOperand = (char)context.ExpressionReader.Peek();
+        var nextOperation = calculatorOperations.Single(_ => _.CanApply(nextOperationOperand));
+        
         bool Func() =>
             operations.Count > 0 &&
-            operations.Peek() != '(' &&
-            calculatorOperation.Precedence <= precedenceOfNextOperation;
+            operations.Peek() != OpenBracket &&
+            !char.IsDigit(operations.Peek()) &&
+            calculatorOperation.Precedence <= nextOperation.Precedence;
 
         EvaluateOperation(Func, context);
     }

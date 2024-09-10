@@ -13,5 +13,5 @@ public class MultiplyOperation : ICalculatorOperation
 
     public bool CanApply(char operand) => operand.Equals(OperandX) || operand.Equals(OperandStar);
 
-    public Operation CalculatorOperation => new(Precedence, Expression.Multiply, "Multiply");
+    public Operation2 CalculatorOperation => new(Precedence, Expression.Multiply, "Multiply");
 }

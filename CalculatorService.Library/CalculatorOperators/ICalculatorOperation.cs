@@ -8,5 +8,5 @@ public interface ICalculatorOperation
 
     bool CanApply(char operand);
 
-    Operation CalculatorOperation { get; }
+    Operation2 CalculatorOperation { get; }
 }

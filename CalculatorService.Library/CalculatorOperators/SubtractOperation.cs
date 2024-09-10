@@ -12,5 +12,5 @@ public class SubtractOperation : ICalculatorOperation
 
     public bool CanApply(char operand) => operand.Equals(Operand);
 
-    public Operation CalculatorOperation => new(Precedence, Expression.Subtract, "Subtract");
+    public Operation2 CalculatorOperation => new(Precedence, Expression.Subtract, "Subtract");
 }

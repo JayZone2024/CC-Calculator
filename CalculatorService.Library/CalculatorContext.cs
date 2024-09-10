@@ -4,7 +4,9 @@ namespace CalculatorService.Library;
 
 public class CalculatorContext
 {
-    public string? Expression { get; init; }
+    public string? MathExpression { get; init; }
+
+    public char NextOperand { get; set; }
 
     public StringReader? ExpressionReader { get; init; }
 
@@ -14,7 +16,7 @@ public class CalculatorContext
 
     public static CalculatorContext CreateWith(string expression, StringReader expressionReader) => new()
     {
-        Expression = expression,
+        MathExpression = expression,
         ExpressionReader = expressionReader
     };
 }
