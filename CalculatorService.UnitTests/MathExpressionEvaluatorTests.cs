@@ -44,6 +44,8 @@ public class MathExpressionEvaluatorTests
     [InlineData("2*(5+3)", 16)]
     [InlineData("(5+3)*2", 16)]
     [InlineData("(100 * 2) + (1000 - 500)", 700)]
+    [InlineData("7.5 + 2.5", 10)]
+    [InlineData("(7.5 + 2.5) + (5 * 2) - 1.5", 18.5)]
     public void When_Expression_Is_Evaluated_Then_Calculated_Value_Should_Be_Valid(string mathExpression, decimal expectedValue)
     {
         // Arrange
