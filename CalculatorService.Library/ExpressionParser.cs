@@ -1,36 +1,56 @@
-﻿using CalculatorService.Library.Extensions;
-using CalculatorService.Library.Models;
+﻿using CalculatorService.Library.Exceptions;
+using CalculatorService.Library.ExpressionParsers;
 
 namespace CalculatorService.Library;
 
 public interface IExpressionParser
 {
-    ParsedExpressionModel ParsedExpression(string expression);
+    void Parse(CalculatorContext context);
 }
 
-public class ExpressionParser : IExpressionParser
+public class ExpressionParser(
+    ICalculatorOperationParser calculatorOperation,
+    INumericValueParser numericValueParser,
+    IOpenBracketParser openBracketParser,
+    ICloseBracketParser closeBracketParser) : IExpressionParser
 {
-    private readonly char[] _mathOperators;
-
-    public ExpressionParser(ICalculatorFunctionFactory calculatorFunctionFactory)
+    public void Parse(CalculatorContext context)
     {
-        _mathOperators = calculatorFunctionFactory
-            .CalculatorFunctions
-            .Select(_ => _.FunctionType)
-            .ToArray();
-    }
+        int peek;
+        var reader = context.ExpressionReader!;
 
-    public ParsedExpressionModel ParsedExpression(string expression)
-    {
-        var parts = expression.Split(_mathOperators, StringSplitOptions.TrimEntries);
-        var mathOperator = expression.First(o => _mathOperators.Any(a => a == o));
-
-        return new ParsedExpressionModel
+        while ((peek = reader.Peek()) > -1)
         {
-            Value1 = parts[0].ToDecimal(),
-            Value2 = parts[1].ToDecimal(),
-            Operation = mathOperator
-        };
+            var nextOperand = (char)peek;
+
+            if (numericValueParser.IsNumericValue(nextOperand, context, out var number))
+            {
+                numericValueParser.ParseValue(context, number!.Value);
+                continue;
+            }
+
+            if (calculatorOperation.IsOperationDefined(nextOperand))
+            {
+                calculatorOperation.ParseOperand(context);
+                continue;
+            }
+
+            if (openBracketParser.IsOpenBracket(nextOperand))
+            {
+                openBracketParser.ParseValue(context);
+                continue;
+            }
+
+            if (closeBracketParser.IsCloseBracket(nextOperand))
+            {
+                closeBracketParser.ParseValue(context);
+                continue;
+            }
+
+            throw new UnknownOperandException(
+                nextOperand,
+                $"Invalid operand '{nextOperand}' detected in expression.");
+        }
     }
 }
 
