@@ -1,11 +1,10 @@
-﻿using CalculatorService.Library.Exceptions;
-using CalculatorService.Library.ExpressionParsers;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using CalculatorService.Library.CalculatorOperators;
 
 namespace CalculatorService.Library;
 
-public class MathExpressionEvaluator(IExpressionParser expressionParser) : IExpressionEvaluator
+public class MathExpressionEvaluator(IExpressionParser expressionParser, IEnumerable<ICalculatorOperation> calculatorOperations) : IExpressionEvaluator
 {
     public decimal Evaluate(string expression)
     {
@@ -24,7 +23,7 @@ public class MathExpressionEvaluator(IExpressionParser expressionParser) : IExpr
         return value;
     }
 
-    private static decimal EvaluateExpression(CalculatorContext context)
+    private decimal EvaluateExpression(CalculatorContext context)
     {
         var expressions = context.CalculatorExpressions;
         var operations = context.CalculatorOperations;
@@ -34,7 +33,10 @@ public class MathExpressionEvaluator(IExpressionParser expressionParser) : IExpr
             var right = expressions.Pop();
             var left = expressions.Pop();
 
-            expressions.Push(((Operation)operations.Pop()).Apply(left, right));
+            var operationType = operations.Pop();
+            var operation = calculatorOperations.Single(_ => _.CanApply(operationType)).CalculatorOperation;
+
+            expressions.Push(operation.Apply(left, right));
         }
 
         var compiled = Expression.Lambda<Func<decimal>>(expressions.Pop()).Compile();

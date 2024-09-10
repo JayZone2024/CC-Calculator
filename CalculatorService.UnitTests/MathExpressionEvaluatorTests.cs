@@ -35,7 +35,7 @@ public class MathExpressionEvaluatorTests
             openBracketParser,
             closeBracketParser);
 
-        _evaluator = new MathExpressionEvaluator(expressionParser);
+        _evaluator = new MathExpressionEvaluator(expressionParser, calculatorOperations);
     }
 
     [Fact]

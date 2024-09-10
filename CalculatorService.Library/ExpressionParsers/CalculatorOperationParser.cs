@@ -47,7 +47,7 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
         context.CalculatorOperations.Push(currentOperation);
     }
 
-    private static void EvaluateOperation(Func<bool> condition, CalculatorContext context)
+    private void EvaluateOperation(Func<bool> condition, CalculatorContext context)
     {
         var expressions = context.CalculatorExpressions;
         var operations = context.CalculatorOperations;
@@ -57,7 +57,10 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
             var right = expressions.Pop();
             var left = expressions.Pop();
 
-            expressions.Push(((Operation)operations.Pop()).Apply(left, right));
+            var operationType = operations.Pop();
+            var operation = calculatorOperations.Single(_ => _.CanApply(operationType)).CalculatorOperation;
+
+            expressions.Push(operation.Apply(left, right));
         }
     }
 }
