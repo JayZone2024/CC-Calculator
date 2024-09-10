@@ -23,11 +23,12 @@ public class MathExpressionEvaluatorTests
             new SubtractOperation()
         };
 
-        var calculatorOperationParser = new CalculatorOperationParser(_calculatorOperations);
+        var calculatorFactory = new CalculatorOperationFactory(_calculatorOperations);
+        var calculatorOperationParser = new CalculatorOperationParser(calculatorFactory);
         
         var numericValueParser = new NumericValueParser();
         var openBracketParser = new OpenBracketParser();
-        var closeBracketParser = new CloseBracketParser(_calculatorOperations);
+        var closeBracketParser = new CloseBracketParser(calculatorFactory);
         
         _expressionParser = new ExpressionParser(
             calculatorOperationParser,

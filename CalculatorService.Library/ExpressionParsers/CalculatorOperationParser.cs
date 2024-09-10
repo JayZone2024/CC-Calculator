@@ -9,37 +9,33 @@ public interface ICalculatorOperationParser
     void ParseOperand(CalculatorContext context);
 }
 
-public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calculatorOperations) : ICalculatorOperationParser
+public class CalculatorOperationParser(
+    ICalculatorOperationFactory calculatorOperationFactory) : ICalculatorOperationParser
 {
     private const char OpenBracket = '(';
 
-    public bool IsOperationDefined(char operand)
-    {
-        var calculatorOperation = calculatorOperations.SingleOrDefault(_ => _.CanApply(operand));
-
-        return calculatorOperation != null;
-    }
+    public bool IsOperationDefined(char operand) => calculatorOperationFactory.DoesOperationExists(operand);
 
     public void ParseOperand(CalculatorContext context)
     {
         var currentOperation = (char)context.ExpressionReader!.Read();
 
-        var calculatorOperation = calculatorOperations.Single(_ => _.CanApply(currentOperation));
+        var calculatorOperation = calculatorOperationFactory.GetCalculatorOperation(currentOperation);
 
         var operations = context.CalculatorOperations;
         var nextOperationOperand = (char)context.ExpressionReader.Peek();
 
         var nextOperationPrecedence =
-            calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand)) == null
+            !calculatorOperationFactory.DoesOperationExists(nextOperationOperand)
                 ? 0
-                : calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand)).Precedence;
+                : calculatorOperationFactory.GetCalculatorOperation(nextOperationOperand)!.Precedence;
 
 
         bool Func() =>
             operations.Count > 0 &&
             operations.Peek() != OpenBracket &&
             !char.IsDigit(operations.Peek()) &&
-            calculatorOperation.Precedence <= nextOperationPrecedence;
+            calculatorOperation!.Precedence <= nextOperationPrecedence;
 
         EvaluateOperation(Func, context);
 
@@ -57,7 +53,7 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
             var left = expressions.Pop();
 
             var operationType = operations.Pop();
-            var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
+            var operation = calculatorOperationFactory.GetCalculatorOperation(operationType);
 
             expressions.Push(operation.Apply(left, right));
         }

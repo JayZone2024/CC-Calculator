@@ -9,7 +9,7 @@ public interface ICloseBracketParser
     void ParseValue(CalculatorContext context);
 }
 
-public class CloseBracketParser(IEnumerable<ICalculatorOperation> calculatorOperations) : ICloseBracketParser
+public class CloseBracketParser(ICalculatorOperationFactory calculatorOperationFactory) : ICloseBracketParser
 {
     private const char OpenBracket = '(';
     private const char CloseBracket = ')';
@@ -40,7 +40,7 @@ public class CloseBracketParser(IEnumerable<ICalculatorOperation> calculatorOper
             var left = expressions.Pop();
 
             var operationType = operations.Pop();
-            var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
+            var operation = calculatorOperationFactory.GetCalculatorOperation(operationType);
 
             expressions.Push(operation.Apply(left, right));
         }
