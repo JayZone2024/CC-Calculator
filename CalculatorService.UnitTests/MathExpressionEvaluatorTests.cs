@@ -28,12 +28,14 @@ public class MathExpressionEvaluatorTests
         var numericValueParser = new NumericValueParser();
         var openBracketParser = new OpenBracketParser();
         var closeBracketParser = new CloseBracketParser(calculatorOperations);
-
-        _evaluator = new MathExpressionEvaluator(
+        
+        var expressionParser = new ExpressionParser(
             calculatorOperationParser,
             numericValueParser,
             openBracketParser,
             closeBracketParser);
+
+        _evaluator = new MathExpressionEvaluator(expressionParser);
     }
 
     [Fact]
@@ -41,7 +43,7 @@ public class MathExpressionEvaluatorTests
     {
         // Arrange
         const string expression = "(2 + 2) * 5";
-        const decimal expectedResult = 4;
+        const decimal expectedResult = 20M;
 
         // Act
         var result = _evaluator.Evaluate(expression);

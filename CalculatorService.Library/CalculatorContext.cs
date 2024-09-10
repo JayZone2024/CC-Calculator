@@ -6,8 +6,6 @@ public class CalculatorContext
 {
     public string? MathExpression { get; init; }
 
-    public char NextOperand { get; set; }
-
     public StringReader? ExpressionReader { get; init; }
 
     public Stack<Expression> CalculatorExpressions { get; } = new();

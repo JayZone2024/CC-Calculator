@@ -4,7 +4,7 @@ namespace CalculatorService.Library.ExpressionParsers;
 
 public interface ICalculatorOperationParser
 {
-    bool IsOperationDefined(CalculatorContext context);
+    bool IsOperationDefined(char operand);
 
     void ParseOperand(CalculatorContext context);
 }
@@ -13,9 +13,9 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
 {
     private const char OpenBracket = '(';
 
-    public bool IsOperationDefined(CalculatorContext context)
+    public bool IsOperationDefined(char operand)
     {
-        var calculatorOperation = calculatorOperations.SingleOrDefault(_ => _.CanApply(context.NextOperand));
+        var calculatorOperation = calculatorOperations.SingleOrDefault(_ => _.CanApply(operand));
 
         return calculatorOperation != null;
     }

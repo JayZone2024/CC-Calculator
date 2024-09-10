@@ -5,14 +5,14 @@ namespace CalculatorService.Library.ExpressionParsers;
 
 public interface INumericValueParser
 {
-    bool IsNumericValue(char operand, StringReader reader, out decimal? value);
+    bool IsNumericValue(char operand, CalculatorContext context, out decimal? value);
 
     void ParseValue(CalculatorContext context, decimal value);
 }
 
 public class NumericValueParser : INumericValueParser
 {
-    public bool IsNumericValue(char operand, StringReader reader, out decimal? value)
+    public bool IsNumericValue(char operand, CalculatorContext context, out decimal? value)
     {
         value = null;
 
@@ -21,6 +21,7 @@ public class NumericValueParser : INumericValueParser
             return false;
         }
 
+        var reader = context.ExpressionReader!;
         var sb = new StringBuilder();
         var valueAsChar = operand;
 
