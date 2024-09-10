@@ -34,7 +34,7 @@ public class MathExpressionEvaluator(IExpressionParser expressionParser, IEnumer
             var left = expressions.Pop();
 
             var operationType = operations.Pop();
-            var operation = calculatorOperations.Single(_ => _.CanApply(operationType)).CalculatorOperation;
+            var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
 
             expressions.Push(operation.Apply(left, right));
         }

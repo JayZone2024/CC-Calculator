@@ -28,7 +28,6 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
 
         var operations = context.CalculatorOperations;
         var nextOperationOperand = (char)context.ExpressionReader.Peek();
-        var a = calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand));
 
         var nextOperationPrecedence =
             calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand)) == null
@@ -58,7 +57,7 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
             var left = expressions.Pop();
 
             var operationType = operations.Pop();
-            var operation = calculatorOperations.Single(_ => _.CanApply(operationType)).CalculatorOperation;
+            var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
 
             expressions.Push(operation.Apply(left, right));
         }

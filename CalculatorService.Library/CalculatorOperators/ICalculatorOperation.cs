@@ -1,4 +1,6 @@
-﻿namespace CalculatorService.Library.CalculatorOperators;
+﻿using System.Linq.Expressions;
+
+namespace CalculatorService.Library.CalculatorOperators;
 
 public interface ICalculatorOperation
 {
@@ -8,5 +10,5 @@ public interface ICalculatorOperation
 
     bool CanApply(char operand);
 
-    Operation2 CalculatorOperation { get; }
+    Expression Apply(Expression left, Expression right);
 }

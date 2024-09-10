@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CalculatorService.Library;
+﻿using CalculatorService.Library;
 using CalculatorService.Library.CalculatorOperators;
 using CalculatorService.Library.ExpressionParsers;
 using FluentAssertions;
@@ -42,8 +37,8 @@ public class MathExpressionEvaluatorTests
     public void Test1()
     {
         // Arrange
-        const string expression = "(2 + 2) * 5";
-        const decimal expectedResult = 20M;
+        const string expression = "((2 + 2) * 5) + 100";
+        const decimal expectedResult = 120M;
 
         // Act
         var result = _evaluator.Evaluate(expression);

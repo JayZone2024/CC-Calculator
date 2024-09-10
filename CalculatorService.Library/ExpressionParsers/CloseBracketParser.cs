@@ -42,7 +42,7 @@ public class CloseBracketParser(IEnumerable<ICalculatorOperation> calculatorOper
             var operationType = operations.Pop();
             var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
 
-            expressions.Push(operation.CalculatorOperation.Apply(left, right));
+            expressions.Push(operation.Apply(left, right));
         }
     }
 }
