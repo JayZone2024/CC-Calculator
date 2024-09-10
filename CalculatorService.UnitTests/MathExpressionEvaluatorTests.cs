@@ -27,7 +27,7 @@ public class MathExpressionEvaluatorTests
         var calculatorOperationParser = new CalculatorOperationParser(calculatorOperations);
         var numericValueParser = new NumericValueParser();
         var openBracketParser = new OpenBracketParser();
-        var closeBracketParser = new CloseBracketParser();
+        var closeBracketParser = new CloseBracketParser(calculatorOperations);
 
         _evaluator = new MathExpressionEvaluator(
             calculatorOperationParser,
@@ -40,7 +40,7 @@ public class MathExpressionEvaluatorTests
     public void Test1()
     {
         // Arrange
-        const string expression = "2 + 2";
+        const string expression = "(2 + 2) * 5";
         const decimal expectedResult = 4;
 
         // Act

@@ -28,15 +28,23 @@ public class CalculatorOperationParser(IEnumerable<ICalculatorOperation> calcula
 
         var operations = context.CalculatorOperations;
         var nextOperationOperand = (char)context.ExpressionReader.Peek();
-        var nextOperation = calculatorOperations.Single(_ => _.CanApply(nextOperationOperand));
-        
+        var a = calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand));
+
+        var nextOperationPrecedence =
+            calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand)) == null
+                ? 0
+                : calculatorOperations.SingleOrDefault(_ => _.CanApply(nextOperationOperand)).Precedence;
+
+
         bool Func() =>
             operations.Count > 0 &&
             operations.Peek() != OpenBracket &&
             !char.IsDigit(operations.Peek()) &&
-            calculatorOperation.Precedence <= nextOperation.Precedence;
+            calculatorOperation.Precedence <= nextOperationPrecedence;
 
         EvaluateOperation(Func, context);
+
+        context.CalculatorOperations.Push(currentOperation);
     }
 
     private static void EvaluateOperation(Func<bool> condition, CalculatorContext context)

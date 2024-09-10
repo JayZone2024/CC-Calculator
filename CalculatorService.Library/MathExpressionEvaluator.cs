@@ -11,6 +11,8 @@ public class MathExpressionEvaluator(
     IOpenBracketParser openBracketParser,
     ICloseBracketParser closeBracketParser) : IExpressionEvaluator
 {
+    private const char OpenBracket = '(';
+
     public decimal Evaluate(string expression)
     {
         expression = Regex

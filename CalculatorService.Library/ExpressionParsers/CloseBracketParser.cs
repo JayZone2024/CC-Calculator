@@ -1,4 +1,6 @@
-﻿namespace CalculatorService.Library.ExpressionParsers;
+﻿using CalculatorService.Library.CalculatorOperators;
+
+namespace CalculatorService.Library.ExpressionParsers;
 
 public interface ICloseBracketParser
 {
@@ -7,7 +9,7 @@ public interface ICloseBracketParser
     void ParseValue(CalculatorContext context);
 }
 
-public class CloseBracketParser : ICloseBracketParser
+public class CloseBracketParser(IEnumerable<ICalculatorOperation> calculatorOperations) : ICloseBracketParser
 {
     private const char OpenBracket = '(';
     private const char CloseBracket = ')';
@@ -24,10 +26,12 @@ public class CloseBracketParser : ICloseBracketParser
 
         EvaluateOperation(Func, context);
 
+        operations.Pop();
+
         context.CalculatorOperations.Push(CloseBracket);
     }
 
-    private static void EvaluateOperation(Func<bool> condition, CalculatorContext context)
+    private void EvaluateOperation(Func<bool> condition, CalculatorContext context)
     {
         var expressions = context.CalculatorExpressions;
         var operations = context.CalculatorOperations;
@@ -37,7 +41,10 @@ public class CloseBracketParser : ICloseBracketParser
             var right = expressions.Pop();
             var left = expressions.Pop();
 
-            expressions.Push(((Operation)operations.Pop()).Apply(left, right));
+            var operationType = operations.Pop();
+            var operation = calculatorOperations.Single(_ => _.CanApply(operationType));
+
+            expressions.Push(operation.CalculatorOperation.Apply(left, right));
         }
     }
 }
